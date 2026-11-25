@@ -1,5 +1,5 @@
 # Scrapes the prod EC2 over the private VPC network.
-# Replace PROD_PRIVATE_IP (two places) with the prod instance's private IPv4 address.
+# prod EC2 private IPv4: 172.31.15.217 (change here if prod is re-created).
 global:
   scrape_interval: 15s
 
@@ -11,11 +11,11 @@ scrape_configs:
   # Host metrics: CPU, memory, disk, network (Node Exporter, port 9100).
   - job_name: prod-node
     static_configs:
-      - targets: ["PROD_PRIVATE_IP:9100"]
+      - targets: ["172.31.15.217:9100"]
         labels: { env: prod }
 
   # Container metrics: stable vs canary (cAdvisor, port 8080).
   - job_name: prod-containers
     static_configs:
-      - targets: ["PROD_PRIVATE_IP:8080"]
+      - targets: ["172.31.15.217:8080"]
         labels: { env: prod }

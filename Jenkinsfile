@@ -27,8 +27,8 @@ pipeline {
     }
 
     environment {
-        DOCKERHUB_REPO = 'CHANGE_ME_DOCKERHUB_USER/smarttunes'   // <-- your Docker Hub repo
-        PROD_HOST      = 'CHANGE_ME_PROD_PRIVATE_IP'            // <-- prod EC2 private IP
+        DOCKERHUB_REPO = 'ducle1234567890/smarttunes'   // Docker Hub repo
+        PROD_HOST      = '172.31.15.217'               // prod EC2 private IP
     }
 
     stages {
