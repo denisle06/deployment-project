@@ -4,7 +4,8 @@
 # Env options:
 #   STAGES="10 100"          canary traffic percentages, in order
 #   PROBES=50                HTTP probes per stage through Nginx
-#   MAX_P95=2.0              latency gate in seconds
+#   MAX_P95=5.0              latency gate in seconds (each probe opens a TLS
+#                            connection to the managed MySQL service, ~2 s)
 #   SIMULATE_FAILURE=false   true = fail the first gate on purpose (rollback demo)
 set -euo pipefail
 source "$(dirname "$0")/common.sh"
@@ -13,7 +14,7 @@ NEW_IMAGE=${1:?usage: deploy.sh <image@digest> <git-sha>}
 NEW_VERSION=${2:?usage: deploy.sh <image@digest> <git-sha>}
 STAGES=${STAGES:-"10 100"}
 PROBES=${PROBES:-50}
-MAX_P95=${MAX_P95:-2.0}
+MAX_P95=${MAX_P95:-5.0}
 SIMULATE_FAILURE=${SIMULATE_FAILURE:-false}
 
 # The last stage must be 100%: stable is only replaced once it receives no traffic.

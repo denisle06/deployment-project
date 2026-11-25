@@ -1,0 +1,37 @@
+<section id="architecture" class="alt" data-transition="fade">
+<div class="head">
+<p class="eyebrow">Architecture</p>
+<h2>Three EC2 servers, one automated path</h2>
+</div>
+<div class="diagram">
+<div class="node" style="left:0px;top:0px;width:230px;height:190px"><p class="tag">Source</p><h3>GitHub</h3><p class="txt">PRs into protected main</p></div>
+<div class="node hl" style="left:286px;top:0px;width:300px;height:190px"><p class="tag">jenkins EC2</p><h3>Jenkins</h3><p class="txt">Polls GitHub, builds and pushes image</p></div>
+<div class="node" style="left:642px;top:0px;width:250px;height:190px"><p class="tag">Registry</p><h3>Docker Hub</h3><p class="txt">Tag :sha + immutable digest</p></div>
+<div class="node" style="left:948px;top:0px;width:270px;height:190px"><p class="tag">test EC2</p><h3>Test agent</h3><p class="txt">SSH agent runs 11 tests</p></div>
+<div class="node hl prod" style="left:1274px;top:0px;width:390px;height:370px">
+<p class="tag">prod EC2</p>
+<h3>Production</h3>
+<div class="inner"><p class="txt">Nginx, weighted upstreams<br>http://13.236.202.250</p></div>
+<div class="pair"><div class="inner"><p class="txt">stable</p></div><div class="inner canary"><p class="txt">canary</p></div></div>
+<p class="txt">Node Exporter + cAdvisor</p>
+</div>
+<div class="node" style="left:0px;top:290px;width:586px;height:140px"><p class="tag">AWS</p><h3>Secrets Manager</h3><p class="txt">Docker Hub token to Jenkins via IAM role</p></div>
+<div class="node" style="left:642px;top:290px;width:576px;height:140px"><p class="tag">jenkins EC2</p><h3>Prometheus + Grafana</h3><p class="txt">Scrapes prod over the private VPC</p></div>
+<div class="node" style="left:1274px;top:410px;width:390px;height:110px"><p class="tag">External data (TLS)</p><p class="txt">Aiven MySQL · Supabase</p></div>
+<x-connector x1="230" y1="95" x2="286" y2="95" head="end"></x-connector>
+<x-connector x1="586" y1="95" x2="642" y2="95" head="end"></x-connector>
+<x-connector x1="892" y1="95" x2="948" y2="95" head="end"></x-connector>
+<x-connector x1="1218" y1="95" x2="1274" y2="95" head="end"></x-connector>
+<x-connector x1="436" y1="290" x2="436" y2="190" head="end"></x-connector>
+<x-connector class="dash" x1="1274" y1="360" x2="1218" y2="360" head="end"></x-connector>
+<x-connector x1="1469" y1="370" x2="1469" y2="410" head="both"></x-connector>
+</div>
+<div class="levels">
+<p class="lvl"><b>L1</b> Repo, build, test, prod servers</p>
+<p class="lvl"><b>L2</b> Prometheus + Grafana on prod</p>
+<p class="lvl"><b>L3</b> SmartTunes live through the pipeline</p>
+<p class="lvl"><b>L4</b> New commit on main deploys automatically</p>
+</div>
+<p class="foot">SWE40006 · Team Three Dog · 2 / 8</p>
+<aside>(~2 min) Everything runs on AWS in Sydney, in one VPC. All three EC2 instances come from ONE launch template; its user-data script installs software based on a Role tag. Left to right is the path of a release: GitHub, Jenkins on the jenkins EC2 builds the Docker image, pushes it to Docker Hub, the test EC2 (a Jenkins agent over SSH) runs the tests, then Jenkins deploys to prod over SSH. On prod, Nginx splits traffic between a stable and a canary container. Underneath: Secrets Manager gives Jenkins the Docker Hub token through an IAM role, so no keys are stored. Prometheus and Grafana also live on the jenkins EC2 and scrape prod over the private network. Security groups reference each other: prod only accepts metrics traffic from the jenkins group, SSH only from team IPs and jenkins. Bottom row maps this to L1 to L4.</aside>
+</section>

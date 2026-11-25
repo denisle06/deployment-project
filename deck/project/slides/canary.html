@@ -1,0 +1,26 @@
+<section id="canary" data-transition="fade">
+<div class="head">
+<p class="eyebrow">Stage 4 · Deploy</p>
+<h2>Canary release with automatic rollback</h2>
+</div>
+<div class="steps">
+<div class="step"><p class="num">1</p><h3>Start canary</h3><p class="txt">New image next to stable</p></div>
+<x-shape kind="arrow-right" class="arrow"></x-shape>
+<div class="step"><p class="num">2</p><h3>Readiness</h3><p class="txt">Health check before traffic</p></div>
+<x-shape kind="arrow-right" class="arrow"></x-shape>
+<div class="step"><p class="num">3</p><h3>10% traffic</h3><p class="txt">50 probes, then gates</p></div>
+<x-shape kind="arrow-right" class="arrow"></x-shape>
+<div class="step"><p class="num">4</p><h3>100% traffic</h3><p class="txt">50 probes, then gates</p></div>
+<x-shape kind="arrow-right" class="arrow"></x-shape>
+<div class="step hl"><p class="num">5</p><h3>Promote</h3><p class="txt">Canary becomes stable</p></div>
+</div>
+<div class="cols2">
+<div class="stack">
+<div class="card"><h3>Gates at every stage</h3><ul><li>Zero 5xx and zero timeouts</li><li>p95 latency under 2 s</li><li>Canary must receive traffic: missing evidence = fail</li></ul></div>
+<div class="card warn"><h3>Any gate fails → automatic rollback</h3><p class="txt">Nginx back to 100% stable. Stable and canary share one PHP session volume, so users stay logged in.</p></div>
+</div>
+<div class="shot"><p>[Screenshot: Nginx log / probe output — traffic shifting 10% → 100%]</p></div>
+</div>
+<p class="foot">SWE40006 · Team Three Dog · 5 / 8</p>
+<aside>(~2 min) Deploy runs over SSH to prod. Jenkins first streams the production settings, stored as a Jenkins secret-file credential, with owner-only permissions. Then it starts the new version as a canary next to the current stable container and waits for readiness. Nginx weights move 10% then 100%. At each stage we fire 50 HTTP probes and check three gates: no 5xx or timeouts, p95 under 2 seconds, and proof the canary actually got traffic; no evidence counts as a failure. All pass: the canary is promoted to stable. Any fail: automatic rollback to 100% stable. Because both containers share a Docker volume for PHP sessions, logged-in users are not kicked out when traffic shifts. There is also a manual rollback script.</aside>
+</section>

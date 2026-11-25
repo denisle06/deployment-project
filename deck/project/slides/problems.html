@@ -1,0 +1,17 @@
+<section id="problems" data-transition="fade">
+<div class="head">
+<p class="eyebrow">What went wrong</p>
+<h2>Problems and how we solved them</h2>
+</div>
+<table class="tbl">
+<tr class="h"><th class="th" style="width:46%">Problem</th><th class="th" style="width:54%">Cause → fix</th></tr>
+<tr><td>EC2s had no public IP; SSH timed out, bootstrap had no internet</td><td>Launched in a private subnet → relaunched in the public subnet, Elastic IPs attached</td></tr>
+<tr class="z"><td>Bootstrap could not read the Role tag</td><td>Metadata tags disabled → role set manually, script re-run; template to take role as a parameter</td></tr>
+<tr><td>Jenkins SSH agent: “authentication failed”</td><td>Server log showed “Invalid user ‘ubuntu ’” → trailing space in the credential username</td></tr>
+<tr class="z"><td>Upload test failed in the pipeline</td><td>Typo in the Supabase URL → the test stage caught a config error before production</td></tr>
+<tr><td>Canary would log users out</td><td>PHP sessions stored per container → shared session volume</td></tr>
+<tr class="z"><td>Direct push to main rejected</td><td>GitHub ruleset → all changes via pull requests (review evidence)</td></tr>
+</table>
+<p class="foot">SWE40006 · Team Three Dog · 7 / 8</p>
+<aside>(~1.5 min) Pick two or three to tell as stories. Networking: our instances first launched into a private subnet, so no public IP, SSH timed out and the bootstrap script could not download anything; we relaunched into the public subnet with Elastic IPs. The bootstrap could not read the Role tag because instance-metadata tags were off; we resolved the role manually, and the template will take the role as a parameter. The best one: Jenkins agent authentication kept failing; the server log said Invalid user “ubuntu ” with a space: a trailing space in the username. And the upload test failing was a typo in the Supabase URL: exactly what a test stage is for, it never reached production. Secrets throughout: Docker Hub token in Secrets Manager, app settings as Jenkins credentials, nothing in Git.</aside>
+</section>

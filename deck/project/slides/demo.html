@@ -1,0 +1,14 @@
+<section id="demo" class="dark" data-transition="fade">
+<div class="head">
+<p class="eyebrow">Live demo · Lessons · Next steps</p>
+<h2>Let’s watch it run</h2>
+</div>
+<div class="cols3">
+<div class="dcard hl"><h3>Demo order</h3><ol><li><span class="ink">Commit a visible change</span> → pipeline → canary → new version live</li><li><span class="ink">FAIL_TESTS</span> → a failing test blocks the release</li><li><span class="ink">SIMULATE_CANARY_FAILURE</span> → automatic rollback</li><li><span class="ink">Grafana</span>: stable vs canary containers</li></ol></div>
+<div class="dcard"><h3>Lessons learned</h3><ul><li>A test stage catches config errors, not only code bugs</li><li>Read the server-side log first</li><li>One digest from test to prod: no surprises</li><li>Automate rollback before you need it</li></ul></div>
+<div class="dcard"><h3>Future work</h3><ul><li>Data on AWS: RDS + S3</li><li>More canary stages, metric-based gates</li><li>GitHub webhook instead of polling</li><li>HTTPS</li><li>Fully separate test database</li></ul></div>
+</div>
+<p class="close mono">http://13.236.202.250 · Questions?</p>
+<p class="foot">SWE40006 · Team Three Dog · 8 / 8</p>
+<aside>(~5 min, mostly live) 1) Merge a small visible change through a PR; within 2 minutes Jenkins picks it up; walk the stages; show the canary at 10% then 100%; refresh the site and show the new version (healthz / X-App-Version). 2) Build with Parameters, FAIL_TESTS: the test stage goes red, the JUnit report shows the failure, deploy never runs, the live site is unchanged. 3) SIMULATE_CANARY_FAILURE: the canary gate fails and Nginx goes back to 100% stable automatically. 4) Open Grafana: host metrics and the stable and canary containers. Close with lessons and future work, then Q&A. Backup if Wi-Fi fails: the screenshots on slides 4 to 6.</aside>
+</section>
