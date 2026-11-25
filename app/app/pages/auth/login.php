@@ -165,7 +165,7 @@ $conn->close();
 <body class="auth-page">
   <!-- Login form container -->
   <div class="form-container">
-    <h2>Login to Smartunes!!!!!</h2>
+    <h2>Login</h2>
 
     <!-- Show error message if login fails -->
     <?php if (!empty($error)): ?>
