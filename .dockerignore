@@ -1,0 +1,13 @@
+# Only app/ and docker/ are needed to build the image.
+.git
+.gitignore
+Jenkinsfile
+README.md
+db
+deploy
+docs
+infra
+monitoring
+tests
+**/.env
+**/*.pem

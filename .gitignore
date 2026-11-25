@@ -9,3 +9,5 @@
 Thumbs.db
 .vscode/
 .idea/
+app.env
+tests/results/

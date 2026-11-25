@@ -1,0 +1,52 @@
+# Production services on the prod EC2 (copied to /opt/smarttunes by Jenkins).
+# Image references come from /opt/smarttunes/.env (managed by scripts/deploy.sh);
+# app secrets come from /opt/smarttunes/app.env (created by hand, chmod 600, never in Git).
+name: smarttunes
+
+services:
+  stable:
+    image: ${STABLE_IMAGE:?STABLE_IMAGE not set}
+    env_file: app.env
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8081:80"   # only Nginx on this host can reach it
+    volumes:
+      - php-sessions:/var/lib/php/sessions
+
+  canary:
+    image: ${CANARY_IMAGE:?CANARY_IMAGE not set}
+    env_file: app.env
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8082:80"
+    volumes:
+      - php-sessions:/var/lib/php/sessions   # shared with stable: logins survive traffic shifts
+
+  # Host metrics (CPU, memory, disk, network) for Prometheus on the jenkins EC2.
+  node-exporter:
+    image: prom/node-exporter:v1.8.2
+    command: ["--path.rootfs=/host"]
+    network_mode: host        # listens on :9100, reachable only from sg-jenkins
+    pid: host
+    restart: unless-stopped
+    volumes:
+      - /:/host:ro,rslave
+
+  # Per-container metrics (stable vs canary resource usage).
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.49.1
+    privileged: true
+    restart: unless-stopped
+    ports:
+      - "8080:8080"           # reachable only from sg-jenkins
+    devices:
+      - /dev/kmsg
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+
+volumes:
+  php-sessions:
