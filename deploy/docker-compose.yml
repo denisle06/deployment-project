@@ -1,6 +1,7 @@
 # Production services on the prod EC2 (copied to /opt/smarttunes by Jenkins).
 # Image references come from /opt/smarttunes/.env (managed by scripts/deploy.sh);
-# app secrets come from /opt/smarttunes/app.env (created by hand, chmod 600, never in Git).
+# app secrets come from /opt/smarttunes/app.env (copied by Jenkins from the
+# smarttunes-prod-env credential, mode 600, never in Git).
 name: smarttunes
 
 services:

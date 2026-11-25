@@ -19,7 +19,7 @@ SIMULATE_FAILURE=${SIMULATE_FAILURE:-false}
 # The last stage must be 100%: stable is only replaced once it receives no traffic.
 case " $STAGES " in *" 100 "*) ;; *) STAGES="$STAGES 100" ;; esac
 
-[ -f "$APP_DIR/app.env" ] || { log "Missing $APP_DIR/app.env (app secrets)"; exit 1; }
+[ -f "$APP_DIR/app.env" ] || { log "Missing $APP_DIR/app.env (app secrets; check the smarttunes-prod-env credential)"; exit 1; }
 install_nginx_site
 log "Pulling $NEW_IMAGE"
 docker pull -q "$NEW_IMAGE"
