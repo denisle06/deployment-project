@@ -1,0 +1,8 @@
+# Local configuration and database certificates.
+.env
+.env.*
+!.env.example
+*.pem
+
+# Local screenshots from browser verification.
+/storage/previews/
