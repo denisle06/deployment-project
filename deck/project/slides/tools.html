@@ -1,0 +1,19 @@
+<section id="tools" data-transition="fade">
+<div class="head">
+<p class="eyebrow">Toolchain</p>
+<h2>Each tool earns its place</h2>
+</div>
+<table class="tbl">
+<tr class="h"><th class="th" style="width:30%">Tool</th><th class="th" style="width:70%">Why we chose it</th></tr>
+<tr><td class="k">GitHub (protected main)</td><td>PRs + review + history = traceability</td></tr>
+<tr class="z"><td class="k">Jenkins + SSH agent</td><td>Visible, self-hosted CI; distributed agent = separate test environment</td></tr>
+<tr><td class="k">Docker + Docker Hub</td><td>Build once, run the same image everywhere</td></tr>
+<tr class="z"><td class="k">EC2 + launch template</td><td>Reproducible servers in minutes</td></tr>
+<tr><td class="k">Nginx</td><td>Weighted canary routing without Kubernetes</td></tr>
+<tr class="z"><td class="k">Prometheus + Grafana</td><td>Portable, central telemetry</td></tr>
+<tr><td class="k">Secrets Manager + Jenkins credentials</td><td>No secrets in Git</td></tr>
+<tr class="z"><td class="k">Canary over Blue-Green</td><td>Limits blast radius; production-traffic gate before full exposure</td></tr>
+</table>
+<p class="foot">SWE40006 · Team Three Dog · 3 / 8</p>
+<aside>(~1.5 min) One line per tool. GitHub gives us pull requests, review and history, so every change is traceable. Jenkins is a visible, self-hosted CI server, and its distributed agent gives us a genuinely separate test environment. Docker and Docker Hub: build once, run the same image everywhere. The launch template makes servers reproducible in minutes. Nginx gives weighted canary routing without needing Kubernetes. Prometheus and Grafana are portable, central telemetry. Secrets live in Secrets Manager and Jenkins credentials, never in Git. And we picked canary over blue-green because it limits the blast radius and checks real production traffic before full exposure.</aside>
+</section>

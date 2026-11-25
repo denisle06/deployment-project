@@ -1,0 +1,16 @@
+<section id="pipeline" class="alt" data-transition="fade">
+<div class="head">
+<p class="eyebrow">Pipeline as code · Jenkinsfile</p>
+<h2>Four stages from commit to production</h2>
+</div>
+<p>Trigger: polls GitHub every 2 min · image tag = short Git SHA · one digest for test and prod</p>
+<div class="row4">
+<div class="card"><p class="num">1 · jenkins EC2</p><h3>Build</h3><ul><li>PHP syntax lint</li><li>docker build (PHP 8.3 + Apache)</li><li>Version baked in: /healthz.php + X-App-Version header</li></ul></div>
+<div class="card"><p class="num">2 · Docker Hub</p><h3>Push</h3><ul><li>Push image tagged with the SHA</li><li>Record the immutable digest</li><li>Test and prod run the byte-identical image</li></ul></div>
+<div class="card"><p class="num">3 · test EC2 agent</p><h3>Test</h3><ul><li>Container from that digest, test settings</li><li>11 smoke + integration tests</li><li>JUnit report; any failure blocks the release</li></ul></div>
+<div class="card hl"><p class="num">4 · prod over SSH</p><h3>Deploy (canary)</h3><ul><li>Prod settings streamed, owner-only file</li><li>Canary next to stable, 10% → 100%</li><li>Gates fail → automatic rollback</li></ul></div>
+</div>
+<div class="shot"><p>[Screenshot: Jenkins Pipeline Overview — all stages green]</p></div>
+<p class="foot">SWE40006 · Team Three Dog · 4 / 8</p>
+<aside>(~2 min) The whole pipeline is a Jenkinsfile in the repo. Jenkins polls GitHub every 2 minutes, so a merge to main starts it automatically: that is L4. Build: PHP lint, then docker build on PHP 8.3 + Apache; the image is tagged with the short commit SHA and the version is visible at /healthz.php and in an X-App-Version header. Push: to Docker Hub, and we record the digest, so test and prod run exactly the same bytes. Test: on the separate test EC2 agent, 11 automated tests: health and DB, version, auth redirects, login and register pages, song catalogue JSON, static assets, secrets not exposed, a register-plus-login flow, and a recording upload that must score 60 to 100. Results show as a JUnit report; any failure stops the release. Deploy: next slide.</aside>
+</section>

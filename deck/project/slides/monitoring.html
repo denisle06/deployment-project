@@ -1,0 +1,26 @@
+<section id="monitoring" class="alt" data-transition="fade">
+<div class="head">
+<p class="eyebrow">L2 · Production instrumentation</p>
+<h2>Monitoring production</h2>
+</div>
+<div class="flow">
+<p class="chip">prod EC2: Node Exporter + cAdvisor</p>
+<x-shape kind="arrow-right" class="arrow"></x-shape>
+<p class="chip hl">Prometheus (jenkins EC2)</p>
+<x-shape kind="arrow-right" class="arrow"></x-shape>
+<p class="chip">Grafana dashboards</p>
+</div>
+<div class="cols2">
+<div class="stack">
+<table class="tbl">
+<tr class="h"><th class="th" style="width:38%">Source</th><th class="th" style="width:62%">What we see</th></tr>
+<tr><td class="k">Node Exporter</td><td>Prod host CPU, memory, disk, network</td></tr>
+<tr class="z"><td class="k">cAdvisor</td><td>Per container: stable vs canary</td></tr>
+</table>
+<div class="card"><ul><li>Scraped over the private VPC network</li><li>Metrics ports open only to the jenkins security group</li><li>Dashboards: Node Exporter Full, cAdvisor</li></ul></div>
+</div>
+<div class="shot"><p>[Screenshot: Grafana — cAdvisor dashboard, stable vs canary containers]</p></div>
+</div>
+<p class="foot">SWE40006 · Team Three Dog · 6 / 8</p>
+<aside>(~1 min) L2 is production performance instrumentation. On prod, Node Exporter exposes host metrics (CPU, memory, disk, network) and cAdvisor exposes per-container metrics, so we can see stable and canary side by side. Prometheus on the jenkins EC2 scrapes both over the private VPC; the prod security group only lets the jenkins group reach those ports. Grafana shows it with the Node Exporter Full and cAdvisor dashboards. We will open Grafana live at the end of the demo.</aside>
+</section>
