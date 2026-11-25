@@ -5,6 +5,7 @@
 //   dockerhub           Username/password: Docker Hub user + token (from AWS Secrets Manager)
 //   ec2-ssh             SSH username (ubuntu) + private key (three-dog-key.pem)
 //   smarttunes-test-env Secret file: app settings for the test environment (test DB + test bucket)
+//   smarttunes-prod-env Secret file: app settings for production (copied to prod on every deploy)
 
 pipeline {
     agent none
@@ -101,11 +102,18 @@ pipeline {
         stage('Deploy (canary)') {
             agent { label 'built-in' }
             steps {
-                withCredentials([sshUserPrivateKey(credentialsId: 'ec2-ssh',
-                        keyFileVariable: 'SSH_KEY', usernameVariable: 'SSH_USER')]) {
+                withCredentials([
+                        sshUserPrivateKey(credentialsId: 'ec2-ssh',
+                            keyFileVariable: 'SSH_KEY', usernameVariable: 'SSH_USER'),
+                        file(credentialsId: 'smarttunes-prod-env', variable: 'PROD_ENV')]) {
                     sh '''
                         SSH_OPTS="-i $SSH_KEY -o StrictHostKeyChecking=accept-new"
                         ssh $SSH_OPTS "$SSH_USER@$PROD_HOST" "mkdir -p /opt/smarttunes"
+                        # Production secrets come from Jenkins: streamed over SSH (never
+                        # written to the workspace or the log) into an owner-only file.
+                        ssh $SSH_OPTS "$SSH_USER@$PROD_HOST" \
+                            "umask 077 && cat > /opt/smarttunes/app.env && chmod 600 /opt/smarttunes/app.env" \
+                            < "$PROD_ENV"
                         # Ship the versioned deployment files with every release.
                         scp $SSH_OPTS -r deploy/docker-compose.yml deploy/nginx deploy/scripts \
                             "$SSH_USER@$PROD_HOST:/opt/smarttunes/"

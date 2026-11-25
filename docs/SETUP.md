@@ -43,13 +43,11 @@ Installation takes about 3–5 minutes. Check it finished:
 ssh -i three-dog-key.pem ubuntu@<public-ip> 'ls /var/log/smarttunes-bootstrap.done && tail -n 3 /var/log/smarttunes-bootstrap.log'
 ```
 
-## 3. Prod: app secrets
+## 3. App secrets
 
-```bash
-ssh -i three-dog-key.pem ubuntu@<prod-public-ip>
-nano /opt/smarttunes/app.env        # fill in from deploy/app.env.example (prod DB + bucket)
-chmod 600 /opt/smarttunes/app.env
-```
+Both environments' settings are Jenkins **Secret file** credentials (see §4), in the format of
+[`deploy/app.env.example`](../deploy/app.env.example), with **no quotes** around values.
+The Deploy stage copies `smarttunes-prod-env` to `/opt/smarttunes/app.env` (mode 600) on every release.
 
 ## 4. Jenkins
 
@@ -68,6 +66,7 @@ chmod 600 /opt/smarttunes/app.env
 | `github` | Username with password | `denisle06` + a fine-grained PAT with read access to this repo's contents (or store it in Secrets Manager like `dockerhub`) |
 | `ec2-ssh` | SSH Username with private key | Username `ubuntu`, key = contents of `three-dog-key.pem` |
 | `smarttunes-test-env` | Secret file | an `app.env` pointing at the **test** DB and **test** bucket |
+| `smarttunes-prod-env` | Secret file | the production `app.env` (prod DB and bucket) |
 
 6. Manage Jenkins → Nodes → **New node** `test` (Permanent agent):
    - Remote root directory `/home/ubuntu/jenkins-agent` · Labels `test` · Executors 1
